@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------
-// | This file is a part of Zdraw.                                 |
+// | This file is a part of Sulfide.                                 |
 // | Copyright (C) 2026 Sona Softworks, LLC. All rights reserved.  |
 // -----------------------------------------------------------------
 

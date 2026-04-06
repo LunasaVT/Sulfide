@@ -51,16 +51,16 @@ public abstract class MixinBufferBuilder {
     }
 
     @Unique
-    private static final Unsafe zdraw$U;
+    private static final Unsafe sulfide$U;
     @Unique
-    private static final long zdraw$BUF_ADDR_OFF;
+    private static final long sulfide$BUF_ADDR_OFF;
 
     static {
         try {
             var f = Unsafe.class.getDeclaredField("theUnsafe");
             f.setAccessible(true);
-            zdraw$U = (Unsafe) f.get(null);
-            zdraw$BUF_ADDR_OFF = zdraw$U.objectFieldOffset(
+            sulfide$U = (Unsafe) f.get(null);
+            sulfide$BUF_ADDR_OFF = sulfide$U.objectFieldOffset(
                     java.nio.Buffer.class.getDeclaredField("address")
             );
         } catch (ReflectiveOperationException e) {
@@ -69,26 +69,26 @@ public abstract class MixinBufferBuilder {
     }
 
     @Unique
-    private long zdraw$addr;
+    private long sulfide$addr;
 
     @Unique
-    private void zdraw$refreshAddr() {
-        zdraw$addr = zdraw$U.getLong(buffer, zdraw$BUF_ADDR_OFF);
+    private void sulfide$refreshAddr() {
+        sulfide$addr = sulfide$U.getLong(buffer, sulfide$BUF_ADDR_OFF);
     }
 
     @Inject(method = "begin", at = @At("RETURN"))
-    private void zdraw$afterBegin(int drawMode, VertexFormat fmt, CallbackInfo ci) {
-        zdraw$refreshAddr();
+    private void sulfide$afterBegin(int drawMode, VertexFormat fmt, CallbackInfo ci) {
+        sulfide$refreshAddr();
     }
 
     @Inject(method = "grow", at = @At("RETURN"))
-    private void zdraw$afterGrow(int size, CallbackInfo ci) {
-        zdraw$refreshAddr();
+    private void sulfide$afterGrow(int size, CallbackInfo ci) {
+        sulfide$refreshAddr();
     }
 
     @Unique
-    private long zdraw$elementPtr() {
-        return zdraw$addr
+    private long sulfide$elementPtr() {
+        return sulfide$addr
                 + (long) vertexCount * format.getVertexSize()
                 + format.getIndex(currentElementId);
     }
@@ -99,30 +99,30 @@ public abstract class MixinBufferBuilder {
      */
     @Overwrite
     public BufferBuilder vertex(double x, double y, double z) {
-        long p = zdraw$elementPtr();
+        long p = sulfide$elementPtr();
         switch (currentElement.getFormat()) {
             case FLOAT:
-                zdraw$U.putFloat(p, (float) (x + offsetX));
-                zdraw$U.putFloat(p + 4, (float) (y + offsetY));
-                zdraw$U.putFloat(p + 8, (float) (z + offsetZ));
+                sulfide$U.putFloat(p, (float) (x + offsetX));
+                sulfide$U.putFloat(p + 4, (float) (y + offsetY));
+                sulfide$U.putFloat(p + 8, (float) (z + offsetZ));
                 break;
             case UNSIGNED_INT:
             case INT:
-                zdraw$U.putInt(p, Float.floatToRawIntBits((float) (x + offsetX)));
-                zdraw$U.putInt(p + 4, Float.floatToRawIntBits((float) (y + offsetY)));
-                zdraw$U.putInt(p + 8, Float.floatToRawIntBits((float) (z + offsetZ)));
+                sulfide$U.putInt(p, Float.floatToRawIntBits((float) (x + offsetX)));
+                sulfide$U.putInt(p + 4, Float.floatToRawIntBits((float) (y + offsetY)));
+                sulfide$U.putInt(p + 8, Float.floatToRawIntBits((float) (z + offsetZ)));
                 break;
             case UNSIGNED_SHORT:
             case SHORT:
-                zdraw$U.putShort(p, (short) (int) (x + offsetX));
-                zdraw$U.putShort(p + 2, (short) (int) (y + offsetY));
-                zdraw$U.putShort(p + 4, (short) (int) (z + offsetZ));
+                sulfide$U.putShort(p, (short) (int) (x + offsetX));
+                sulfide$U.putShort(p + 2, (short) (int) (y + offsetY));
+                sulfide$U.putShort(p + 4, (short) (int) (z + offsetZ));
                 break;
             case UNSIGNED_BYTE:
             case BYTE:
-                zdraw$U.putByte(p, (byte) (int) (x + offsetX));
-                zdraw$U.putByte(p + 1, (byte) (int) (y + offsetY));
-                zdraw$U.putByte(p + 2, (byte) (int) (z + offsetZ));
+                sulfide$U.putByte(p, (byte) (int) (x + offsetX));
+                sulfide$U.putByte(p + 1, (byte) (int) (y + offsetY));
+                sulfide$U.putByte(p + 2, (byte) (int) (z + offsetZ));
                 break;
         }
         nextElement();
@@ -136,40 +136,40 @@ public abstract class MixinBufferBuilder {
     @Overwrite
     public BufferBuilder color(int red, int green, int blue, int alpha) {
         if (textured) return (BufferBuilder) (Object) this;
-        long p = zdraw$elementPtr();
+        long p = sulfide$elementPtr();
         switch (currentElement.getFormat()) {
             case FLOAT:
-                zdraw$U.putFloat(p, red / 255.0F);
-                zdraw$U.putFloat(p + 4, green / 255.0F);
-                zdraw$U.putFloat(p + 8, blue / 255.0F);
-                zdraw$U.putFloat(p + 12, alpha / 255.0F);
+                sulfide$U.putFloat(p, red / 255.0F);
+                sulfide$U.putFloat(p + 4, green / 255.0F);
+                sulfide$U.putFloat(p + 8, blue / 255.0F);
+                sulfide$U.putFloat(p + 12, alpha / 255.0F);
                 break;
             case UNSIGNED_INT:
             case INT:
-                zdraw$U.putFloat(p, (float) red);
-                zdraw$U.putFloat(p + 4, (float) green);
-                zdraw$U.putFloat(p + 8, (float) blue);
-                zdraw$U.putFloat(p + 12, (float) alpha);
+                sulfide$U.putFloat(p, (float) red);
+                sulfide$U.putFloat(p + 4, (float) green);
+                sulfide$U.putFloat(p + 8, (float) blue);
+                sulfide$U.putFloat(p + 12, (float) alpha);
                 break;
             case UNSIGNED_SHORT:
             case SHORT:
-                zdraw$U.putShort(p, (short) red);
-                zdraw$U.putShort(p + 2, (short) green);
-                zdraw$U.putShort(p + 4, (short) blue);
-                zdraw$U.putShort(p + 6, (short) alpha);
+                sulfide$U.putShort(p, (short) red);
+                sulfide$U.putShort(p + 2, (short) green);
+                sulfide$U.putShort(p + 4, (short) blue);
+                sulfide$U.putShort(p + 6, (short) alpha);
                 break;
             case UNSIGNED_BYTE:
             case BYTE:
                 if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-                    zdraw$U.putByte(p, (byte) red);
-                    zdraw$U.putByte(p + 1, (byte) green);
-                    zdraw$U.putByte(p + 2, (byte) blue);
-                    zdraw$U.putByte(p + 3, (byte) alpha);
+                    sulfide$U.putByte(p, (byte) red);
+                    sulfide$U.putByte(p + 1, (byte) green);
+                    sulfide$U.putByte(p + 2, (byte) blue);
+                    sulfide$U.putByte(p + 3, (byte) alpha);
                 } else {
-                    zdraw$U.putByte(p, (byte) alpha);
-                    zdraw$U.putByte(p + 1, (byte) blue);
-                    zdraw$U.putByte(p + 2, (byte) green);
-                    zdraw$U.putByte(p + 3, (byte) red);
+                    sulfide$U.putByte(p, (byte) alpha);
+                    sulfide$U.putByte(p + 1, (byte) blue);
+                    sulfide$U.putByte(p + 2, (byte) green);
+                    sulfide$U.putByte(p + 3, (byte) red);
                 }
                 break;
         }
@@ -183,26 +183,26 @@ public abstract class MixinBufferBuilder {
      */
     @Overwrite
     public BufferBuilder texture(double u, double v) {
-        long p = zdraw$elementPtr();
+        long p = sulfide$elementPtr();
         switch (currentElement.getFormat()) {
             case FLOAT:
-                zdraw$U.putFloat(p, (float) u);
-                zdraw$U.putFloat(p + 4, (float) v);
+                sulfide$U.putFloat(p, (float) u);
+                sulfide$U.putFloat(p + 4, (float) v);
                 break;
             case UNSIGNED_INT:
             case INT:
-                zdraw$U.putInt(p, (int) u);
-                zdraw$U.putInt(p + 4, (int) v);
+                sulfide$U.putInt(p, (int) u);
+                sulfide$U.putInt(p + 4, (int) v);
                 break;
             case UNSIGNED_SHORT:
             case SHORT:
-                zdraw$U.putShort(p, (short) (int) v);
-                zdraw$U.putShort(p + 2, (short) (int) u);
+                sulfide$U.putShort(p, (short) (int) v);
+                sulfide$U.putShort(p + 2, (short) (int) u);
                 break;
             case UNSIGNED_BYTE:
             case BYTE:
-                zdraw$U.putByte(p, (byte) (int) v);
-                zdraw$U.putByte(p + 1, (byte) (int) u);
+                sulfide$U.putByte(p, (byte) (int) v);
+                sulfide$U.putByte(p + 1, (byte) (int) u);
                 break;
         }
         nextElement();
@@ -215,26 +215,26 @@ public abstract class MixinBufferBuilder {
      */
     @Overwrite
     public BufferBuilder texture2(int u, int v) {
-        long p = zdraw$elementPtr();
+        long p = sulfide$elementPtr();
         switch (currentElement.getFormat()) {
             case FLOAT:
-                zdraw$U.putFloat(p, (float) u);
-                zdraw$U.putFloat(p + 4, (float) v);
+                sulfide$U.putFloat(p, (float) u);
+                sulfide$U.putFloat(p + 4, (float) v);
                 break;
             case UNSIGNED_INT:
             case INT:
-                zdraw$U.putInt(p, u);
-                zdraw$U.putInt(p + 4, v);
+                sulfide$U.putInt(p, u);
+                sulfide$U.putInt(p + 4, v);
                 break;
             case UNSIGNED_SHORT:
             case SHORT:
-                zdraw$U.putShort(p, (short) v);
-                zdraw$U.putShort(p + 2, (short) u);
+                sulfide$U.putShort(p, (short) v);
+                sulfide$U.putShort(p + 2, (short) u);
                 break;
             case UNSIGNED_BYTE:
             case BYTE:
-                zdraw$U.putByte(p, (byte) v);
-                zdraw$U.putByte(p + 1, (byte) u);
+                sulfide$U.putByte(p, (byte) v);
+                sulfide$U.putByte(p + 1, (byte) u);
                 break;
         }
         nextElement();
@@ -247,30 +247,30 @@ public abstract class MixinBufferBuilder {
      */
     @Overwrite
     public BufferBuilder normal(float x, float y, float z) {
-        long p = zdraw$elementPtr();
+        long p = sulfide$elementPtr();
         switch (currentElement.getFormat()) {
             case FLOAT:
-                zdraw$U.putFloat(p, x);
-                zdraw$U.putFloat(p + 4, y);
-                zdraw$U.putFloat(p + 8, z);
+                sulfide$U.putFloat(p, x);
+                sulfide$U.putFloat(p + 4, y);
+                sulfide$U.putFloat(p + 8, z);
                 break;
             case UNSIGNED_INT:
             case INT:
-                zdraw$U.putInt(p, (int) x);
-                zdraw$U.putInt(p + 4, (int) y);
-                zdraw$U.putInt(p + 8, (int) z);
+                sulfide$U.putInt(p, (int) x);
+                sulfide$U.putInt(p + 4, (int) y);
+                sulfide$U.putInt(p + 8, (int) z);
                 break;
             case UNSIGNED_SHORT:
             case SHORT:
-                zdraw$U.putShort(p, (short) ((int) x * 32767 & 0xFFFF));
-                zdraw$U.putShort(p + 2, (short) ((int) y * 32767 & 0xFFFF));
-                zdraw$U.putShort(p + 4, (short) ((int) z * 32767 & 0xFFFF));
+                sulfide$U.putShort(p, (short) ((int) x * 32767 & 0xFFFF));
+                sulfide$U.putShort(p + 2, (short) ((int) y * 32767 & 0xFFFF));
+                sulfide$U.putShort(p + 4, (short) ((int) z * 32767 & 0xFFFF));
                 break;
             case UNSIGNED_BYTE:
             case BYTE:
-                zdraw$U.putByte(p, (byte) ((int) x * 127 & 0xFF));
-                zdraw$U.putByte(p + 1, (byte) ((int) y * 127 & 0xFF));
-                zdraw$U.putByte(p + 2, (byte) ((int) z * 127 & 0xFF));
+                sulfide$U.putByte(p, (byte) ((int) x * 127 & 0xFF));
+                sulfide$U.putByte(p + 1, (byte) ((int) y * 127 & 0xFF));
+                sulfide$U.putByte(p + 2, (byte) ((int) z * 127 & 0xFF));
                 break;
         }
         nextElement();
@@ -286,12 +286,12 @@ public abstract class MixinBufferBuilder {
         int m = (vertexCount - 4) * format.getVertexSizeInteger()
                 + format.getUvIndex(1) / 4;
         int n = format.getVertexSize() >> 2;
-        long base = zdraw$addr + (long) m * 4;
+        long base = sulfide$addr + (long) m * 4;
         long stride = (long) n * 4;
-        zdraw$U.putInt(base, i);
-        zdraw$U.putInt(base + stride, j);
-        zdraw$U.putInt(base + stride * 2, k);
-        zdraw$U.putInt(base + stride * 3, l);
+        sulfide$U.putInt(base, i);
+        sulfide$U.putInt(base + stride, j);
+        sulfide$U.putInt(base + stride * 2, k);
+        sulfide$U.putInt(base + stride * 3, l);
     }
 
     /**
@@ -303,13 +303,13 @@ public abstract class MixinBufferBuilder {
         int stride = format.getVertexSizeInteger();
         int base = (vertexCount - 4) * stride;
         for (int v = 0; v < 4; v++) {
-            long p = zdraw$addr + ((long) base + (long) v * stride) * 4;
-            zdraw$U.putInt(p, Float.floatToRawIntBits(
-                    (float) (d + offsetX) + Float.intBitsToFloat(zdraw$U.getInt(p))));
-            zdraw$U.putInt(p + 4, Float.floatToRawIntBits(
-                    (float) (e + offsetY) + Float.intBitsToFloat(zdraw$U.getInt(p + 4))));
-            zdraw$U.putInt(p + 8, Float.floatToRawIntBits(
-                    (float) (f + offsetZ) + Float.intBitsToFloat(zdraw$U.getInt(p + 8))));
+            long p = sulfide$addr + ((long) base + (long) v * stride) * 4;
+            sulfide$U.putInt(p, Float.floatToRawIntBits(
+                    (float) (d + offsetX) + Float.intBitsToFloat(sulfide$U.getInt(p))));
+            sulfide$U.putInt(p + 4, Float.floatToRawIntBits(
+                    (float) (e + offsetY) + Float.intBitsToFloat(sulfide$U.getInt(p + 4))));
+            sulfide$U.putInt(p + 8, Float.floatToRawIntBits(
+                    (float) (f + offsetZ) + Float.intBitsToFloat(sulfide$U.getInt(p + 8))));
         }
     }
 
@@ -321,10 +321,10 @@ public abstract class MixinBufferBuilder {
     public void faceTint(float r, float g, float b, int i) {
         int j = ((vertexCount - i) * format.getVertexSize()
                 + format.getColorIndex()) / 4;
-        long p = zdraw$addr + (long) j * 4;
+        long p = sulfide$addr + (long) j * 4;
         int k = -1;
         if (!textured) {
-            k = zdraw$U.getInt(p);
+            k = sulfide$U.getInt(p);
             if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
                 int lr = (int) ((float) (k & 0xFF) * r);
                 int lg = (int) ((float) ((k >> 8) & 0xFF) * g);
@@ -337,7 +337,7 @@ public abstract class MixinBufferBuilder {
                 k = (k & 0xFF) | (lr << 24) | (lg << 16) | (lb << 8);
             }
         }
-        zdraw$U.putInt(p, k);
+        sulfide$U.putInt(p, k);
     }
 
     /**
@@ -346,11 +346,11 @@ public abstract class MixinBufferBuilder {
      */
     @Overwrite
     private void putColor(int index, int red, int green, int blue, int alpha) {
-        long p = zdraw$addr + (long) index * 4;
+        long p = sulfide$addr + (long) index * 4;
         if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-            zdraw$U.putInt(p, (alpha << 24) | (blue << 16) | (green << 8) | red);
+            sulfide$U.putInt(p, (alpha << 24) | (blue << 16) | (green << 8) | red);
         } else {
-            zdraw$U.putInt(p, (red << 24) | (green << 16) | (blue << 8) | alpha);
+            sulfide$U.putInt(p, (red << 24) | (green << 16) | (blue << 8) | alpha);
         }
     }
 
@@ -366,12 +366,12 @@ public abstract class MixinBufferBuilder {
         int packed = nx | (ny << 8) | (nz << 16);
         int stride = format.getVertexSize() >> 2;
         int n = (vertexCount - 4) * stride + format.getNormalIndex() / 4;
-        long base = zdraw$addr + (long) n * 4;
+        long base = sulfide$addr + (long) n * 4;
         long s = (long) stride * 4;
-        zdraw$U.putInt(base, packed);
-        zdraw$U.putInt(base + s, packed);
-        zdraw$U.putInt(base + s * 2, packed);
-        zdraw$U.putInt(base + s * 3, packed);
+        sulfide$U.putInt(base, packed);
+        sulfide$U.putInt(base + s, packed);
+        sulfide$U.putInt(base + s * 2, packed);
+        sulfide$U.putInt(base + s * 3, packed);
     }
 
     /**
@@ -382,9 +382,9 @@ public abstract class MixinBufferBuilder {
     public void putArray(int[] data) {
         grow(data.length);
         int pos = vertexCount * format.getVertexSizeInteger();
-        zdraw$U.copyMemory(
+        sulfide$U.copyMemory(
                 data, Unsafe.ARRAY_INT_BASE_OFFSET,
-                null, zdraw$addr + (long) pos * 4,
+                null, sulfide$addr + (long) pos * 4,
                 (long) data.length * 4
         );
         vertexCount += data.length / format.getVertexSizeInteger();
@@ -403,7 +403,7 @@ public abstract class MixinBufferBuilder {
 
         int vertInts = format.getVertexSizeInteger();
         int vertBytes = format.getVertexSize();
-        long addr = zdraw$addr;
+        long addr = sulfide$addr;
         long vs = (long) vertInts * 4;
 
         float adjX = (float) ((double) cameraX + offsetX);
@@ -413,18 +413,18 @@ public abstract class MixinBufferBuilder {
         for (int q = 0; q < quadCount; q++) {
             long qb = addr + (long) q * vertBytes * 4L;
 
-            float x0 = zdraw$U.getFloat(qb);
-            float y0 = zdraw$U.getFloat(qb + 4);
-            float z0 = zdraw$U.getFloat(qb + 8);
-            float x1 = zdraw$U.getFloat(qb + vs);
-            float y1 = zdraw$U.getFloat(qb + vs + 4);
-            float z1 = zdraw$U.getFloat(qb + vs + 8);
-            float x2 = zdraw$U.getFloat(qb + vs * 2);
-            float y2 = zdraw$U.getFloat(qb + vs * 2 + 4);
-            float z2 = zdraw$U.getFloat(qb + vs * 2 + 8);
-            float x3 = zdraw$U.getFloat(qb + vs * 3);
-            float y3 = zdraw$U.getFloat(qb + vs * 3 + 4);
-            float z3 = zdraw$U.getFloat(qb + vs * 3 + 8);
+            float x0 = sulfide$U.getFloat(qb);
+            float y0 = sulfide$U.getFloat(qb + 4);
+            float z0 = sulfide$U.getFloat(qb + 8);
+            float x1 = sulfide$U.getFloat(qb + vs);
+            float y1 = sulfide$U.getFloat(qb + vs + 4);
+            float z1 = sulfide$U.getFloat(qb + vs + 8);
+            float x2 = sulfide$U.getFloat(qb + vs * 2);
+            float y2 = sulfide$U.getFloat(qb + vs * 2 + 4);
+            float z2 = sulfide$U.getFloat(qb + vs * 2 + 8);
+            float x3 = sulfide$U.getFloat(qb + vs * 3);
+            float y3 = sulfide$U.getFloat(qb + vs * 3 + 4);
+            float z3 = sulfide$U.getFloat(qb + vs * 3 + 8);
 
             float dx = (x0 + x1 + x2 + x3) * 0.25F - adjX;
             float dy = (y0 + y1 + y2 + y3) * 0.25F - adjY;
@@ -445,7 +445,7 @@ public abstract class MixinBufferBuilder {
         for (int m = 0; (m = done.nextClearBit(m)) < indices.length; m++) {
             int target = indices[m];
             if (target != m) {
-                zdraw$U.copyMemory(
+                sulfide$U.copyMemory(
                         null, addr + (long) target * quadBytes,
                         temp, Unsafe.ARRAY_INT_BASE_OFFSET,
                         quadBytes
@@ -453,7 +453,7 @@ public abstract class MixinBufferBuilder {
 
                 int cur = target;
                 for (int nxt = indices[target]; cur != m; nxt = indices[nxt]) {
-                    zdraw$U.copyMemory(
+                    sulfide$U.copyMemory(
                             addr + (long) nxt * quadBytes,
                             addr + (long) cur * quadBytes,
                             quadBytes
@@ -462,7 +462,7 @@ public abstract class MixinBufferBuilder {
                     cur = nxt;
                 }
 
-                zdraw$U.copyMemory(
+                sulfide$U.copyMemory(
                         temp, Unsafe.ARRAY_INT_BASE_OFFSET,
                         null, addr + (long) m * quadBytes,
                         quadBytes

@@ -54,7 +54,7 @@ public abstract class MixinGameRenderer {
             method = "renderWorld(IFJ)V",
             at = @At(value = "INVOKE", target = RENDER_ENTITIES)
     )
-    private void zdraw$beforeEntities(int anaglyphFilter, float tickDelta, long limitTime,
+    private void sulfide$beforeEntities(int anaglyphFilter, float tickDelta, long limitTime,
                                       CallbackInfo ci) {
         if (SulfideOptionStorage.getInstance().isEnableInstancedEntities()) {
             SulfideState.INSTANCE.beginFrame();
@@ -62,7 +62,7 @@ public abstract class MixinGameRenderer {
     }
 
     @Inject(method = "updateLightmap", at = @At("HEAD"), cancellable = true)
-    private void zdraw$updateLightmap(float tickDelta, CallbackInfo ci) {
+    private void sulfide$updateLightmap(float tickDelta, CallbackInfo ci) {
         if (!SulfideOptionStorage.getInstance().isEnableComputeLightmap()) return;
         ci.cancel();
         if (!this.lightmapDirty) return;

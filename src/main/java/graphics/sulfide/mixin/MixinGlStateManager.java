@@ -13,67 +13,67 @@ import java.nio.FloatBuffer;
 public class MixinGlStateManager {
 
     @Inject(method = "matrixMode", at = @At("HEAD"))
-    private static void zdraw$matrixMode(int mode, CallbackInfo ci) {
+    private static void sulfide$matrixMode(int mode, CallbackInfo ci) {
         MatrixTracker.INSTANCE.setMode(mode);
     }
 
     @Inject(method = "pushMatrix", at = @At("HEAD"))
-    private static void zdraw$pushMatrix(CallbackInfo ci) {
+    private static void sulfide$pushMatrix(CallbackInfo ci) {
         MatrixTracker.INSTANCE.push();
     }
 
     @Inject(method = "popMatrix", at = @At("HEAD"))
-    private static void zdraw$popMatrix(CallbackInfo ci) {
+    private static void sulfide$popMatrix(CallbackInfo ci) {
         MatrixTracker.INSTANCE.pop();
     }
 
     @Inject(method = "loadIdentity", at = @At("HEAD"))
-    private static void zdraw$loadIdentity(CallbackInfo ci) {
+    private static void sulfide$loadIdentity(CallbackInfo ci) {
         MatrixTracker.INSTANCE.loadIdentity();
     }
 
     @Inject(method = "translate(FFF)V", at = @At("HEAD"))
-    private static void zdraw$translateF(float x, float y, float z, CallbackInfo ci) {
+    private static void sulfide$translateF(float x, float y, float z, CallbackInfo ci) {
         MatrixTracker.INSTANCE.translate(x, y, z);
     }
 
     @Inject(method = "translate(DDD)V", at = @At("HEAD"))
-    private static void zdraw$translateD(double x, double y, double z, CallbackInfo ci) {
+    private static void sulfide$translateD(double x, double y, double z, CallbackInfo ci) {
         MatrixTracker.INSTANCE.translate((float) x, (float) y, (float) z);
     }
 
     @Inject(method = "rotate", at = @At("HEAD"))
-    private static void zdraw$rotate(float angle, float x, float y, float z, CallbackInfo ci) {
+    private static void sulfide$rotate(float angle, float x, float y, float z, CallbackInfo ci) {
         MatrixTracker.INSTANCE.rotate(angle, x, y, z);
     }
 
     @Inject(method = "scale(FFF)V", at = @At("HEAD"))
-    private static void zdraw$scaleF(float x, float y, float z, CallbackInfo ci) {
+    private static void sulfide$scaleF(float x, float y, float z, CallbackInfo ci) {
         MatrixTracker.INSTANCE.scale(x, y, z);
     }
 
     @Inject(method = "scale(DDD)V", at = @At("HEAD"))
-    private static void zdraw$scaleD(double x, double y, double z, CallbackInfo ci) {
+    private static void sulfide$scaleD(double x, double y, double z, CallbackInfo ci) {
         MatrixTracker.INSTANCE.scale((float) x, (float) y, (float) z);
     }
 
     @Inject(method = "multiMatrix", at = @At("HEAD"))
-    private static void zdraw$multiMatrix(FloatBuffer buf, CallbackInfo ci) {
+    private static void sulfide$multiMatrix(FloatBuffer buf, CallbackInfo ci) {
         MatrixTracker.INSTANCE.mulMatrix(buf);
     }
 
     @Inject(method = "bindTexture", at = @At("HEAD"))
-    private static void zdraw$bindTexture(int texture, CallbackInfo ci) {
+    private static void sulfide$bindTexture(int texture, CallbackInfo ci) {
         MatrixTracker.INSTANCE.setBoundTexture(texture);
     }
 
     @Inject(method = "color(FFFF)V", at = @At("HEAD"))
-    private static void zdraw$color(float r, float g, float b, float a, CallbackInfo ci) {
+    private static void sulfide$color(float r, float g, float b, float a, CallbackInfo ci) {
         MatrixTracker.setColor(r, g, b, a);
     }
 
     @Inject(method = "color(FFF)V", at = @At("HEAD"))
-    private static void zdraw$colorRgb(float r, float g, float b, CallbackInfo ci) {
+    private static void sulfide$colorRgb(float r, float g, float b, CallbackInfo ci) {
         MatrixTracker.setColor(r, g, b, MatrixTracker.INSTANCE.getColorA());
     }
 

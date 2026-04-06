@@ -14,7 +14,7 @@ public class MixinModelBox {
             method = "<init>(Lnet/minecraft/client/render/model/ModelPart;IIFFFIIIFZ)V",
             at = @At("RETURN")
     )
-    private void zdraw$captureUvParams(
+    private void sulfide$captureUvParams(
             ModelPart part, int texU, int texV,
             float x, float y, float z,
             int szX, int szY, int szZ,

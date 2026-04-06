@@ -50,14 +50,14 @@ public class MixinWorldRenderer {
     private int starsList;
 
     @Unique
-    private static final Identifier zdraw$SUN = new Identifier("textures/environment/sun.png");
+    private static final Identifier sulfide$SUN = new Identifier("textures/environment/sun.png");
     @Unique
-    private static final Identifier zdraw$MOON = new Identifier("textures/environment/moon_phases.png");
+    private static final Identifier sulfide$MOON = new Identifier("textures/environment/moon_phases.png");
     @Unique
-    private static final Identifier zdraw$CLOUDS = new Identifier("textures/environment/clouds.png");
+    private static final Identifier sulfide$CLOUDS = new Identifier("textures/environment/clouds.png");
 
     @Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
-    private void zdraw$renderSky(float tickDelta, int anaglyphFilter, CallbackInfo ci) {
+    private void sulfide$renderSky(float tickDelta, int anaglyphFilter, CallbackInfo ci) {
         if (!SulfideOptionStorage.getInstance().isEnableSkyRendering()) return;
 
         if (this.world.dimension.getType() == 1) {
@@ -155,10 +155,10 @@ public class MixinWorldRenderer {
 
         SkyVboCache.bindSky();
 
-        this.textureManager.bindTexture(zdraw$SUN);
+        this.textureManager.bindTexture(sulfide$SUN);
         SkyVboCache.drawSun();
 
-        this.textureManager.bindTexture(zdraw$MOON);
+        this.textureManager.bindTexture(sulfide$MOON);
         int moonPhase = this.world.getMoonPhase();
         SkyVboCache.drawMoon(moonPhase);
 
@@ -249,7 +249,7 @@ public class MixinWorldRenderer {
 
 
     @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    private void zdraw$renderClouds(float tickDelta, int anaglyphFilter, CallbackInfo ci) {
+    private void sulfide$renderClouds(float tickDelta, int anaglyphFilter, CallbackInfo ci) {
         if (!SulfideOptionStorage.getInstance().isEnableCloudRendering()) return;
         if (this.client.options.getCloudMode() == 2) return;
         if (!this.world.dimension.canPlayersSleep()) return;
@@ -291,7 +291,7 @@ public class MixinWorldRenderer {
         }
 
         GlStateManager.disableCull();
-        this.textureManager.bindTexture(zdraw$CLOUDS);
+        this.textureManager.bindTexture(sulfide$CLOUDS);
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 

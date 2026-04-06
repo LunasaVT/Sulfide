@@ -58,15 +58,15 @@ public class MixinModelPart {
     private static final float RAD_TO_DEG = 180.0F / (float) Math.PI;
 
     @Unique
-    private static final FloatBuffer zdraw$mvBuf = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer sulfide$mvBuf = BufferUtils.createFloatBuffer(16);
     @Unique
-    private static final FloatBuffer zdraw$lightBuf = BufferUtils.createFloatBuffer(4);
+    private static final FloatBuffer sulfide$lightBuf = BufferUtils.createFloatBuffer(4);
     @Unique
-    private static final FloatBuffer zdraw$texMatBuf = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer sulfide$texMatBuf = BufferUtils.createFloatBuffer(16);
 
 
     @Inject(method = "render(F)V", at = @At("HEAD"), cancellable = true)
-    private void zdraw$render(float scale, CallbackInfo ci) {
+    private void sulfide$render(float scale, CallbackInfo ci) {
         if (!SulfideState.INSTANCE.getRecording()) return;
 
         if (this.hide || !this.visible) {
@@ -94,7 +94,7 @@ public class MixinModelPart {
                     this.pivotX * scale, this.pivotY * scale, this.pivotZ * scale);
         }
 
-        zdraw$recordCuboids(scale);
+        sulfide$recordCuboids(scale);
 
         if (this.modelList != null) {
             for (ModelPart modelPart : this.modelList) {
@@ -115,7 +115,7 @@ public class MixinModelPart {
     }
 
     @Inject(method = "rotateAndRender(F)V", at = @At("HEAD"), cancellable = true)
-    private void zdraw$rotateAndRender(float scale, CallbackInfo ci) {
+    private void sulfide$rotateAndRender(float scale, CallbackInfo ci) {
         if (!SulfideState.INSTANCE.getRecording() || SulfideState.suppressRecording) return;
 
         if (this.hide || !this.visible) {
@@ -133,7 +133,7 @@ public class MixinModelPart {
         if (this.posX != 0.0F)
             GlStateManager.rotate(this.posX * RAD_TO_DEG, 1.0F, 0.0F, 0.0F);
 
-        zdraw$recordCuboids(scale);
+        sulfide$recordCuboids(scale);
 
         if (this.modelList != null) {
             for (ModelPart modelPart : this.modelList) {
@@ -147,15 +147,15 @@ public class MixinModelPart {
     }
 
     @Unique
-    private void zdraw$recordCuboids(float scale) {
+    private void sulfide$recordCuboids(float scale) {
         TextureRegion region = SulfideState.INSTANCE.getOrUploadTexture(
                 MatrixTracker.INSTANCE.getBoundTexture());
         if (region == null) return;
 
-        zdraw$mvBuf.clear();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, zdraw$mvBuf);
-        zdraw$mvBuf.rewind();
-        Matrix4f modelview = new Matrix4f(zdraw$mvBuf);
+        sulfide$mvBuf.clear();
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, sulfide$mvBuf);
+        sulfide$mvBuf.rewind();
+        Matrix4f modelview = new Matrix4f(sulfide$mvBuf);
 
         boolean isGlint = GL11.glIsEnabled(GL11.GL_BLEND)
                 && GL11.glGetInteger(GL11.GL_BLEND_SRC) == GL11.GL_SRC_COLOR;
@@ -164,10 +164,10 @@ public class MixinModelPart {
         float uvM10 = 0f, uvM11 = 1f;
         float uvM30 = 0f, uvM31 = 0f;
         if (isGlint) {
-            zdraw$texMatBuf.clear();
-            GL11.glGetFloat(GL11.GL_TEXTURE_MATRIX, zdraw$texMatBuf);
-            zdraw$texMatBuf.rewind();
-            Matrix4f texMat = new Matrix4f(zdraw$texMatBuf);
+            sulfide$texMatBuf.clear();
+            GL11.glGetFloat(GL11.GL_TEXTURE_MATRIX, sulfide$texMatBuf);
+            sulfide$texMatBuf.rewind();
+            Matrix4f texMat = new Matrix4f(sulfide$texMatBuf);
             uvM00 = texMat.m00();
             uvM01 = texMat.m10();
             uvM10 = texMat.m01();
@@ -180,13 +180,13 @@ public class MixinModelPart {
         int prevClientTex = GL11.glGetInteger(GL13.GL_CLIENT_ACTIVE_TEXTURE);
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GL13.glClientActiveTexture(GL13.GL_TEXTURE1);
-        zdraw$lightBuf.clear();
-        GL11.glGetFloat(GL11.GL_CURRENT_TEXTURE_COORDS, zdraw$lightBuf);
+        sulfide$lightBuf.clear();
+        GL11.glGetFloat(GL11.GL_CURRENT_TEXTURE_COORDS, sulfide$lightBuf);
         GL13.glActiveTexture(prevTex);
         GL13.glClientActiveTexture(prevClientTex);
 
-        int lightU = Math.min(15, Math.max(0, (int) (zdraw$lightBuf.get(0) / 16.0f)));
-        int lightV = Math.min(15, Math.max(0, (int) (zdraw$lightBuf.get(1) / 16.0f)));
+        int lightU = Math.min(15, Math.max(0, (int) (sulfide$lightBuf.get(0) / 16.0f)));
+        int lightV = Math.min(15, Math.max(0, (int) (sulfide$lightBuf.get(1) / 16.0f)));
 
         int packedColor = EntityModelCollector.packRGBA(
                 (int) (MatrixTracker.INSTANCE.getColorR() * 255.0f),
@@ -221,7 +221,7 @@ public class MixinModelPart {
 
             EntityModelCollector.record(
                     model,
-                    zdraw$buildUvRects(uvData),
+                    sulfide$buildUvRects(uvData),
                     region,
                     lightU,
                     lightV,
@@ -236,7 +236,7 @@ public class MixinModelPart {
     }
 
     @Unique
-    private static int[] zdraw$buildUvRects(int[] uv) {
+    private static int[] sulfide$buildUvRects(int[] uv) {
         int i = uv[0], j = uv[1];
         int k = uv[2], l = uv[3], m = uv[4];
         float tw = Float.intBitsToFloat(uv[5]);

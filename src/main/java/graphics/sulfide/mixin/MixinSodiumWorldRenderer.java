@@ -20,14 +20,14 @@ import java.util.Map;
 @Mixin(value = SodiumWorldRenderer.class, remap = false)
 public class MixinSodiumWorldRenderer {
     @Unique
-    private static final FloatBuffer zdraw$projBuf = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer sulfide$projBuf = BufferUtils.createFloatBuffer(16);
 
     @Inject(method = "renderBlockEntities(Ljava/util/Map;F)V", at = @At("HEAD"))
-    void zdraw$renderBlockEntities(Map<Integer, BlockBreakingInfo> blockBreakingProgressions, float tickDelta, CallbackInfo ci) {
-        zdraw$projBuf.clear();
-        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, zdraw$projBuf);
-        zdraw$projBuf.rewind();
-        SulfideState.INSTANCE.endFrame(new Matrix4f(zdraw$projBuf));
+    void sulfide$renderBlockEntities(Map<Integer, BlockBreakingInfo> blockBreakingProgressions, float tickDelta, CallbackInfo ci) {
+        sulfide$projBuf.clear();
+        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, sulfide$projBuf);
+        sulfide$projBuf.rewind();
+        SulfideState.INSTANCE.endFrame(new Matrix4f(sulfide$projBuf));
 
         GL45C.glBindVertexArray(0);
         GL30C.glUseProgram(0);

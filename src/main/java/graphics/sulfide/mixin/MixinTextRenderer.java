@@ -68,7 +68,7 @@ public class MixinTextRenderer {
     public int fontHeight;
 
     @Unique // for fast lookup
-    private static final String zdraw$TABLE =
+    private static final String sulfide$TABLE =
             "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5"
                     + "\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e"
                     + "\u015f\u0174\u0175\u017e\u0207"
@@ -92,17 +92,17 @@ public class MixinTextRenderer {
                     + "\u25a0\u0000";
 
     @Unique
-    private static final int[] zdraw$CHAR_INDEX = new int[65536];
+    private static final int[] sulfide$CHAR_INDEX = new int[65536];
 
     static {
-        Arrays.fill(zdraw$CHAR_INDEX, -1);
-        for (int i = zdraw$TABLE.length() - 1; i >= 0; i--) {
-            zdraw$CHAR_INDEX[zdraw$TABLE.charAt(i)] = i;
+        Arrays.fill(sulfide$CHAR_INDEX, -1);
+        for (int i = sulfide$TABLE.length() - 1; i >= 0; i--) {
+            sulfide$CHAR_INDEX[sulfide$TABLE.charAt(i)] = i;
         }
     }
 
     @Unique
-    private final Map<String, Integer> zdraw$widthCache =
+    private final Map<String, Integer> sulfide$widthCache =
             new LinkedHashMap<String, Integer>(512, 0.75f, true) {
                 @Override
                 protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
@@ -111,30 +111,30 @@ public class MixinTextRenderer {
             };
 
     @Unique
-    private static final int zdraw$PAGE_NONE = Integer.MIN_VALUE;
+    private static final int sulfide$PAGE_NONE = Integer.MIN_VALUE;
     @Unique
-    private static final int zdraw$PAGE_DEFAULT = -1;
+    private static final int sulfide$PAGE_DEFAULT = -1;
 
     @Unique
-    private int zdraw$currentPage;
+    private int sulfide$currentPage;
     @Unique
-    private boolean zdraw$batchActive;
+    private boolean sulfide$batchActive;
 
     @Unique
-    private static final int zdraw$DECO_STRIDE = 8;
+    private static final int sulfide$DECO_STRIDE = 8;
     @Unique
-    private static final int zdraw$MAX_DECOS = 256;
+    private static final int sulfide$MAX_DECOS = 256;
     @Unique
-    private final float[] zdraw$decoData = new float[zdraw$MAX_DECOS * zdraw$DECO_STRIDE];
+    private final float[] sulfide$decoData = new float[sulfide$MAX_DECOS * sulfide$DECO_STRIDE];
 
     @Inject(method = "reload", at = @At("HEAD"))
-    private void zdraw$onReload(ResourceManager mgr, CallbackInfo ci) {
-        zdraw$widthCache.clear();
+    private void sulfide$onReload(ResourceManager mgr, CallbackInfo ci) {
+        sulfide$widthCache.clear();
     }
 
     @Inject(method = "setUnicode", at = @At("HEAD"))
-    private void zdraw$onSetUnicode(boolean unicode, CallbackInfo ci) {
-        zdraw$widthCache.clear();
+    private void sulfide$onSetUnicode(boolean unicode, CallbackInfo ci) {
+        sulfide$widthCache.clear();
     }
 
     /**
@@ -146,7 +146,7 @@ public class MixinTextRenderer {
         if (character == 167) return -1;
         if (character == ' ') return 4;
 
-        int i = zdraw$CHAR_INDEX[character];
+        int i = sulfide$CHAR_INDEX[character];
         if (character > 0 && i != -1 && !this.unicode) {
             return this.characterWidths[i];
         }
@@ -173,7 +173,7 @@ public class MixinTextRenderer {
 
         boolean cacheEnabled = SulfideOptionStorage.getInstance().isEnableTextWidthCache();
         if (cacheEnabled) {
-            Integer cached = zdraw$widthCache.get(text);
+            Integer cached = sulfide$widthCache.get(text);
             if (cached != null) return cached;
         }
 
@@ -198,7 +198,7 @@ public class MixinTextRenderer {
         }
 
         if (cacheEnabled) {
-            zdraw$widthCache.put(text, width);
+            sulfide$widthCache.put(text, width);
         }
         return width;
     }
@@ -212,9 +212,9 @@ public class MixinTextRenderer {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 
-        zdraw$currentPage = zdraw$PAGE_NONE;
-        zdraw$batchActive = false;
-        int zdraw$decoCount = 0;
+        sulfide$currentPage = sulfide$PAGE_NONE;
+        sulfide$batchActive = false;
+        int sulfide$decoCount = 0;
 
         float curR = this.red, curG = this.green, curB = this.blue, curA = this.alpha;
 
@@ -222,7 +222,7 @@ public class MixinTextRenderer {
             char c = text.charAt(i);
 
             if (c == 167 && i + 1 < text.length()) {
-                int j = zdraw$formattingIndex(text.charAt(i + 1));
+                int j = sulfide$formattingIndex(text.charAt(i + 1));
 
                 if (j < 16) {
                     this.obfuscated = false;
@@ -235,7 +235,7 @@ public class MixinTextRenderer {
                     int k = this.colorCodes[j];
                     this.color = k;
 
-                    zdraw$flushBatch(tess);
+                    sulfide$flushBatch(tess);
                     curR = (float) (k >> 16 & 255) / 255.0F;
                     curG = (float) (k >> 8 & 255) / 255.0F;
                     curB = (float) (k & 255) / 255.0F;
@@ -257,7 +257,7 @@ public class MixinTextRenderer {
                     this.strikethrough = false;
                     this.underline = false;
                     this.italic = false;
-                    zdraw$flushBatch(tess);
+                    sulfide$flushBatch(tess);
                     curR = this.red;
                     curG = this.green;
                     curB = this.blue;
@@ -268,16 +268,16 @@ public class MixinTextRenderer {
                 continue;
             }
 
-            int j = zdraw$CHAR_INDEX[c];
+            int j = sulfide$CHAR_INDEX[c];
 
             if (this.obfuscated && j != -1) {
                 int charW = this.getCharWidth(c);
                 char d;
                 do {
-                    d = zdraw$TABLE.charAt(this.random.nextInt(zdraw$TABLE.length()));
+                    d = sulfide$TABLE.charAt(this.random.nextInt(sulfide$TABLE.length()));
                 } while (charW != this.getCharWidth(d));
                 c = d;
-                j = zdraw$CHAR_INDEX[c];
+                j = sulfide$CHAR_INDEX[c];
             }
 
             float f = this.unicode ? 0.5F : 1.0F;
@@ -287,7 +287,7 @@ public class MixinTextRenderer {
                 this.y -= f;
             }
 
-            float g = zdraw$renderGlyph(c, j, this.italic, tess, buf);
+            float g = sulfide$renderGlyph(c, j, this.italic, tess, buf);
 
             if (bl) {
                 this.x += f;
@@ -301,7 +301,7 @@ public class MixinTextRenderer {
                     this.x -= f;
                     this.y -= f;
                 }
-                zdraw$renderGlyph(c, j, this.italic, tess, buf);
+                sulfide$renderGlyph(c, j, this.italic, tess, buf);
                 this.x -= f;
                 if (bl) {
                     this.x += f;
@@ -310,48 +310,48 @@ public class MixinTextRenderer {
                 ++g;
             }
 
-            if (this.strikethrough && zdraw$decoCount < zdraw$MAX_DECOS) {
-                int di = zdraw$decoCount++ * zdraw$DECO_STRIDE;
+            if (this.strikethrough && sulfide$decoCount < sulfide$MAX_DECOS) {
+                int di = sulfide$decoCount++ * sulfide$DECO_STRIDE;
                 float yc = this.y + (float) (this.fontHeight / 2);
-                zdraw$decoData[di] = this.x;
-                zdraw$decoData[di + 1] = yc - 1.0F;
-                zdraw$decoData[di + 2] = this.x + g;
-                zdraw$decoData[di + 3] = yc;
-                zdraw$decoData[di + 4] = curR;
-                zdraw$decoData[di + 5] = curG;
-                zdraw$decoData[di + 6] = curB;
-                zdraw$decoData[di + 7] = curA;
+                sulfide$decoData[di] = this.x;
+                sulfide$decoData[di + 1] = yc - 1.0F;
+                sulfide$decoData[di + 2] = this.x + g;
+                sulfide$decoData[di + 3] = yc;
+                sulfide$decoData[di + 4] = curR;
+                sulfide$decoData[di + 5] = curG;
+                sulfide$decoData[di + 6] = curB;
+                sulfide$decoData[di + 7] = curA;
             }
-            if (this.underline && zdraw$decoCount < zdraw$MAX_DECOS) {
-                int di = zdraw$decoCount++ * zdraw$DECO_STRIDE;
+            if (this.underline && sulfide$decoCount < sulfide$MAX_DECOS) {
+                int di = sulfide$decoCount++ * sulfide$DECO_STRIDE;
                 float yb = this.y + (float) this.fontHeight;
-                zdraw$decoData[di] = this.x - 1.0F;
-                zdraw$decoData[di + 1] = yb - 1.0F;
-                zdraw$decoData[di + 2] = this.x + g;
-                zdraw$decoData[di + 3] = yb;
-                zdraw$decoData[di + 4] = curR;
-                zdraw$decoData[di + 5] = curG;
-                zdraw$decoData[di + 6] = curB;
-                zdraw$decoData[di + 7] = curA;
+                sulfide$decoData[di] = this.x - 1.0F;
+                sulfide$decoData[di + 1] = yb - 1.0F;
+                sulfide$decoData[di + 2] = this.x + g;
+                sulfide$decoData[di + 3] = yb;
+                sulfide$decoData[di + 4] = curR;
+                sulfide$decoData[di + 5] = curG;
+                sulfide$decoData[di + 6] = curB;
+                sulfide$decoData[di + 7] = curA;
             }
 
             this.x += (float) ((int) g);
         }
 
         // flush remaining glyph batch
-        zdraw$flushBatch(tess);
+        sulfide$flushBatch(tess);
 
         // draw every decoration in a single batch
-        if (zdraw$decoCount > 0) {
+        if (sulfide$decoCount > 0) {
             GlStateManager.disableTexture();
             buf.begin(7, VertexFormats.POSITION);
             float prevR = curR, prevG = curG, prevB = curB, prevA = curA;
-            for (int d = 0; d < zdraw$decoCount; d++) {
-                int di = d * zdraw$DECO_STRIDE;
-                float dr = zdraw$decoData[di + 4];
-                float dg = zdraw$decoData[di + 5];
-                float db = zdraw$decoData[di + 6];
-                float da = zdraw$decoData[di + 7];
+            for (int d = 0; d < sulfide$decoCount; d++) {
+                int di = d * sulfide$DECO_STRIDE;
+                float dr = sulfide$decoData[di + 4];
+                float dg = sulfide$decoData[di + 5];
+                float db = sulfide$decoData[di + 6];
+                float da = sulfide$decoData[di + 7];
                 // flush + restart if color changed
                 if (dr != prevR || dg != prevG || db != prevB || da != prevA) {
                     tess.draw();
@@ -364,10 +364,10 @@ public class MixinTextRenderer {
                 } else if (d == 0) {
                     GlStateManager.color(dr, dg, db, da);
                 }
-                float x1 = zdraw$decoData[di];
-                float y1 = zdraw$decoData[di + 1];
-                float x2 = zdraw$decoData[di + 2];
-                float y2 = zdraw$decoData[di + 3];
+                float x1 = sulfide$decoData[di];
+                float y1 = sulfide$decoData[di + 1];
+                float x2 = sulfide$decoData[di + 2];
+                float y2 = sulfide$decoData[di + 3];
                 buf.vertex(x1, y2, 0.0).next();
                 buf.vertex(x2, y2, 0.0).next();
                 buf.vertex(x2, y1, 0.0).next();
@@ -379,22 +379,22 @@ public class MixinTextRenderer {
     }
 
     @Unique
-    private float zdraw$renderGlyph(char c, int tableIdx, boolean italic,
+    private float sulfide$renderGlyph(char c, int tableIdx, boolean italic,
                                     Tessellator tess, BufferBuilder buf) {
         if (c == ' ') return 4.0F;
 
         if (tableIdx != -1 && !this.unicode) {
-            zdraw$ensurePage(zdraw$PAGE_DEFAULT, tess, buf);
-            return zdraw$addNormalGlyph(tableIdx, italic, buf);
+            sulfide$ensurePage(sulfide$PAGE_DEFAULT, tess, buf);
+            return sulfide$addNormalGlyph(tableIdx, italic, buf);
         } else {
             if (this.glyphWidths[c] == 0) return 0.0F;
-            zdraw$ensurePage(c / 256, tess, buf);
-            return zdraw$addUnicodeGlyph(c, italic, buf);
+            sulfide$ensurePage(c / 256, tess, buf);
+            return sulfide$addUnicodeGlyph(c, italic, buf);
         }
     }
 
     @Unique
-    private float zdraw$addNormalGlyph(int idx, boolean italic, BufferBuilder buf) {
+    private float sulfide$addNormalGlyph(int idx, boolean italic, BufferBuilder buf) {
         int texU = (idx % 16) * 8;
         int texV = (idx / 16) * 8;
         int slant = italic ? 1 : 0;
@@ -415,7 +415,7 @@ public class MixinTextRenderer {
     }
 
     @Unique
-    private float zdraw$addUnicodeGlyph(char c, boolean italic, BufferBuilder buf) {
+    private float sulfide$addUnicodeGlyph(char c, boolean italic, BufferBuilder buf) {
         int rawStart = this.glyphWidths[c] >>> 4;
         int rawEnd = this.glyphWidths[c] & 15;
         float gStart = (float) rawStart;
@@ -439,32 +439,32 @@ public class MixinTextRenderer {
     }
 
     @Unique
-    private void zdraw$ensurePage(int page, Tessellator tess, BufferBuilder buf) {
-        if (zdraw$currentPage != page) {
-            zdraw$flushBatch(tess);
-            if (page == zdraw$PAGE_DEFAULT) {
+    private void sulfide$ensurePage(int page, Tessellator tess, BufferBuilder buf) {
+        if (sulfide$currentPage != page) {
+            sulfide$flushBatch(tess);
+            if (page == sulfide$PAGE_DEFAULT) {
                 this.textureManager.bindTexture(this.fontTexture);
             } else {
-                this.textureManager.bindTexture(zdraw$getFontPage(page));
+                this.textureManager.bindTexture(sulfide$getFontPage(page));
             }
-            zdraw$currentPage = page;
+            sulfide$currentPage = page;
         }
-        if (!zdraw$batchActive) {
+        if (!sulfide$batchActive) {
             buf.begin(7, VertexFormats.POSITION_TEXTURE);
-            zdraw$batchActive = true;
+            sulfide$batchActive = true;
         }
     }
 
     @Unique
-    private void zdraw$flushBatch(Tessellator tess) {
-        if (zdraw$batchActive) {
+    private void sulfide$flushBatch(Tessellator tess) {
+        if (sulfide$batchActive) {
             tess.draw();
-            zdraw$batchActive = false;
+            sulfide$batchActive = false;
         }
     }
 
     @Unique
-    private static Identifier zdraw$getFontPage(int page) {
+    private static Identifier sulfide$getFontPage(int page) {
         if (PAGES[page] == null) {
             PAGES[page] = new Identifier(String.format("textures/font/unicode_page_%02x.png", page));
         }
@@ -472,7 +472,7 @@ public class MixinTextRenderer {
     }
 
     @Unique
-    private static int zdraw$formattingIndex(char c) {
+    private static int sulfide$formattingIndex(char c) {
         if (c >= '0' && c <= '9') return c - '0';
         if (c >= 'a' && c <= 'f') return c - 'a' + 10;
         if (c >= 'A' && c <= 'F') return c - 'A' + 10;

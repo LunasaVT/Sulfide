@@ -15,7 +15,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity> {
             method = "method_10252",
             at = @At("RETURN")
     )
-    private void zdraw$captureOverlay(T entity, float tickDelta, boolean bl,
+    private void sulfide$captureOverlay(T entity, float tickDelta, boolean bl,
                                       CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue()) {
             MatrixTracker.clearOverlay();
@@ -38,7 +38,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity> {
             method = "method_10260",
             at = @At("HEAD")
     )
-    private void zdraw$clearOverlay(CallbackInfo ci) {
+    private void sulfide$clearOverlay(CallbackInfo ci) {
         MatrixTracker.clearOverlay();
     }
 
@@ -46,7 +46,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity> {
             method = "render(Lnet/minecraft/entity/LivingEntity;DDDFF)V",
             at = @At("RETURN")
     )
-    private void zdraw$renderReturn(T entity, double x, double y, double z,
+    private void sulfide$renderReturn(T entity, double x, double y, double z,
                                     float yaw, float tickDelta, CallbackInfo ci) {
         MatrixTracker.clearOverlay();
     }
