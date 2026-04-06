@@ -1,4 +1,5 @@
 ## Sulfide
+> The moment your GPU has been waiting for.
 
 Fast rendering engine for Minecraft 1.8.9, because the GPU is there to be used.
 
