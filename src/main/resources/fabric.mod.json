@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "sulfide",
+  "version": "${version}",
+  "name": "Sulfide",
+  "description": "Fast rendering engine for Minecraft 1.8.9.",
+  "authors": [
+    "Lunasa"
+  ],
+  "entrypoints": {
+    "radium:config_api_user": [
+      "graphics.sulfide.config.SulfideConfigBuilder"
+    ]
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/sulfide/icon.png",
+  "environment": "*",
+  "mixins": [
+    "zdraw.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.2",
+    "minecraft": "~1.8.9",
+    "java": ">=17"
+  }
+}

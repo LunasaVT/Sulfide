@@ -1,0 +1,92 @@
+// -----------------------------------------------------------------
+// | This file is a part of Zdraw.                                 |
+// | Copyright (C) 2026 Sona Softworks, LLC. All rights reserved.  |
+// -----------------------------------------------------------------
+
+#version 430 core
+
+// ----------------------------------------------------------------- in
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+// ----------------------------------------------------------------- uniforms
+
+layout(rgba8, binding = 0) writeonly uniform image2D uOutput;
+
+uniform float uBrightness[16];
+
+uniform float uSkyFactor;
+uniform float uSkyMul;
+uniform float uFlicker;
+uniform float uSkyDark;
+uniform float uNightVision;
+uniform float uGamma;
+uniform int   uDimType;
+uniform int   uLightning;
+
+// ----------------------------------------------------------------- exec
+
+void main() {
+    // fetch the indices
+    int blockIdx = int(gl_GlobalInvocationID.x);
+    int skyIdx   = int(gl_GlobalInvocationID.y);
+
+    // copied from wr math sorry for the ass names
+    float h = uBrightness[skyIdx]   * (uLightning != 0 ? 1.0 : uSkyMul);
+    float j = uBrightness[blockIdx] * uFlicker;
+
+    float o = j * ((j * 0.6 + 0.4) * 0.6 + 0.4);
+    float p = j * (j * j  * 0.6 + 0.4);
+
+    float q, r, s;
+
+    // 1 indicates nether btw
+    if (uDimType == 1) {
+        q = 0.22 + j * 0.75;
+        r = 0.28 + o * 0.75;
+        s = 0.25 + p * 0.75;
+    } else {
+        float sky65 = uSkyFactor * 0.65 + 0.35;
+        q = h * sky65 + j;
+        r = h * sky65 + o;
+        s = h          + p;
+        q = q * 0.96 + 0.03;
+        r = r * 0.96 + 0.03;
+        s = s * 0.96 + 0.03;
+        if (uSkyDark > 0.0) {
+            q = q * (1.0 - uSkyDark) + q * 0.7 * uSkyDark;
+            r = r * (1.0 - uSkyDark) + r * 0.6 * uSkyDark;
+            s = s * (1.0 - uSkyDark) + s * 0.6 * uSkyDark;
+        }
+    }
+
+    // night vision
+    if (uNightVision > 0.0) {
+        float maxCh = max(max(q, r), s);
+        float u = min(1.0 / max(maxCh, 0.001), 1.0);
+        q = mix(q, q * u, uNightVision);
+        r = mix(r, r * u, uNightVision);
+        s = mix(s, s * u, uNightVision);
+    }
+
+
+    // gamma correction
+    q = clamp(q, 0.0, 1.0);
+    r = clamp(r, 0.0, 1.0);
+    s = clamp(s, 0.0, 1.0);
+
+    float uv = 1.0 - q; uv = 1.0 - uv * uv * uv * uv;
+    float vv = 1.0 - r; vv = 1.0 - vv * vv * vv * vv;
+    float wv = 1.0 - s; wv = 1.0 - wv * wv * wv * wv;
+    q = mix(q, uv, uGamma);
+    r = mix(r, vv, uGamma);
+    s = mix(s, wv, uGamma);
+
+    q = clamp(q * 0.96 + 0.03, 0.0, 1.0);
+    r = clamp(r * 0.96 + 0.03, 0.0, 1.0);
+    s = clamp(s * 0.96 + 0.03, 0.0, 1.0);
+
+    // store the image
+    imageStore(uOutput, ivec2(blockIdx, skyIdx), vec4(q, r, s, 1.0));
+}
+

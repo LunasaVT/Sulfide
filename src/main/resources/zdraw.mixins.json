@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "graphics.sulfide.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MixinSodiumWorldRenderer"
+  ],
+  "client": [
+    "MixinBufferBuilder",
+    "MixinGameRenderer",
+    "MixinGlStateManager",
+    "MixinHeldItemFeatureRenderer",
+    "MixinLivingEntityRenderer",
+    "MixinModelBox",
+    "MixinModelPart",
+    "MixinTextRenderer",
+    "MixinWorldRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
