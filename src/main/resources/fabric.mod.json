@@ -3,7 +3,7 @@
   "id": "sulfide",
   "version": "${version}",
   "name": "Sulfide",
-  "description": "Fast rendering engine for Minecraft 1.8.9.",
+  "description": "Fast rendering engine for Minecraft 1.8.9, because the GPU is there to be used.\n",
   "authors": [
     "Lunasa"
   ],
