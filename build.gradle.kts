@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.lunasa"
-version = "1.4-SNAPSHOT"
+version = "1.5-SNAPSHOT"
 
 val lwjglVersion = "3.4.1"
 val jomlVersion = "1.10.8"
