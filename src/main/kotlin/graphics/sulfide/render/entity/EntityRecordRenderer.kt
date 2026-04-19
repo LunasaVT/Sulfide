@@ -52,12 +52,12 @@ class EntityRecordRenderer : AbstractInstancedRenderer(MAX_INSTANCES) {
         viewProjection.get(vpArray)
 
         lightBuf.clear()
-        GL11.glGetLight(GL11.GL_LIGHT0, GL11.GL_POSITION, lightBuf)
+        GL11.glGetLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, lightBuf)
         val l0x = lightBuf.get(0);
         val l0y = lightBuf.get(1);
         val l0z = lightBuf.get(2)
         lightBuf.clear()
-        GL11.glGetLight(GL11.GL_LIGHT1, GL11.GL_POSITION, lightBuf)
+        GL11.glGetLightfv(GL11.GL_LIGHT1, GL11.GL_POSITION, lightBuf)
         val l1x = lightBuf.get(0);
         val l1y = lightBuf.get(1);
         val l1z = lightBuf.get(2)

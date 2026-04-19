@@ -16,6 +16,7 @@ val shadow by configurations.creating
 repositories {
     mavenCentral()
     maven("https://api.modrinth.com/maven/")
+    maven("https://maven.axolotlclient.com/releases")
     maven {
         name = "legacy-fabric"
         url = uri("https://maven.legacyfabric.net/")
@@ -25,12 +26,15 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:1.8.9")
     mappings("net.legacyfabric:legacy-yarn:1.8.9+build.4:v2")
+
+    ploceus.dependOsl("0.17.0")
+
     modImplementation("net.fabricmc:fabric-loader:0.18.3")
-    modImplementation("maven.modrinth:radium-mod:0.8.10+mc1.8.9")
+    modImplementation("maven.modrinth:radium-mod:0.8.12+mc1.8.9")
+    modImplementation("io.github.moehreag:legacy-lwjgl3:1.2.11+1.8.9")
 
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
-    implementation("it.unimi.dsi:fastutil:8.5.14")
     implementation("org.slf4j:slf4j-api:2.0.17")
 
     shadow(kotlin("stdlib-jdk8"))

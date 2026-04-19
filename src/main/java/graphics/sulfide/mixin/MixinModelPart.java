@@ -153,7 +153,7 @@ public class MixinModelPart {
         if (region == null) return;
 
         sulfide$mvBuf.clear();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, sulfide$mvBuf);
+        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, sulfide$mvBuf);
         sulfide$mvBuf.rewind();
         Matrix4f modelview = new Matrix4f(sulfide$mvBuf);
 
@@ -165,7 +165,7 @@ public class MixinModelPart {
         float uvM30 = 0f, uvM31 = 0f;
         if (isGlint) {
             sulfide$texMatBuf.clear();
-            GL11.glGetFloat(GL11.GL_TEXTURE_MATRIX, sulfide$texMatBuf);
+            GL11.glGetFloatv(GL11.GL_TEXTURE_MATRIX, sulfide$texMatBuf);
             sulfide$texMatBuf.rewind();
             Matrix4f texMat = new Matrix4f(sulfide$texMatBuf);
             uvM00 = texMat.m00();
@@ -181,7 +181,7 @@ public class MixinModelPart {
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GL13.glClientActiveTexture(GL13.GL_TEXTURE1);
         sulfide$lightBuf.clear();
-        GL11.glGetFloat(GL11.GL_CURRENT_TEXTURE_COORDS, sulfide$lightBuf);
+        GL11.glGetFloatv(GL11.GL_CURRENT_TEXTURE_COORDS, sulfide$lightBuf);
         GL13.glActiveTexture(prevTex);
         GL13.glClientActiveTexture(prevClientTex);
 
