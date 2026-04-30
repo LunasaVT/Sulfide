@@ -1,7 +1,7 @@
-﻿    // -----------------------------------------------------------------
-    // | This file is a part of Sulfide.                                 |
-    // | Copyright (C) 2026 Sona Softworks, LLC. All rights reserved.  |
-    // -----------------------------------------------------------------
+﻿// -----------------------------------------------------------------
+// | This file is a part of Sulfide.                               |
+// | Copyright (C) 2026 Sona Softworks, LLC. All rights reserved.  |
+// -----------------------------------------------------------------
 
 #version 450 core
 
