@@ -33,6 +33,6 @@ void main() {
     // emit the fragment
     fragColor = vec4(
         glintSample.rgb * vColor.rgb * 0.5,
-        glintSample.a   * 0.35
+        glintSample.a   * 0.67
     );
 }
