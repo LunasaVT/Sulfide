@@ -2,12 +2,11 @@ package graphics.sulfide.mixin;
 
 import graphics.sulfide.config.SulfideOptionStorage;
 import graphics.sulfide.render.SulfideState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +22,7 @@ public abstract class MixinGameRenderer {
                     "Lnet/minecraft/client/render/CameraView;F)V";
 
     @Shadow
-    private net.minecraft.client.MinecraftClient client;
+    private MinecraftClient client;
     @Shadow
     @Mutable
     private boolean lightmapDirty;
@@ -33,17 +32,15 @@ public abstract class MixinGameRenderer {
     private float skyDarkness;
     @Shadow
     private float lastSkyDarkness;
-    @Final
-    @Shadow
-    private NativeImageBackedTexture lightmapTexture;
-    @Final
-    @Shadow
-    private Identifier lightmapTextureId;
 
     @Shadow
     private float getNightVisionStrength(LivingEntity entity, float tickDelta) {
         throw new UnsupportedOperationException();
     }
+
+    @Shadow
+    @Final
+    private NativeImageBackedTexture lightmapTexture;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     void impl$__init__(CallbackInfo ci) {
@@ -84,7 +81,7 @@ public abstract class MixinGameRenderer {
         float nightVision = 0f;
         if (this.client.player != null &&
                 this.client.player.hasStatusEffect(StatusEffect.NIGHTVISION)) {
-            nightVision = getNightVisionStrength((PlayerEntity) this.client.player, tickDelta);
+            nightVision = getNightVisionStrength(this.client.player, tickDelta);
         }
 
         float gamma = this.client.options.gamma;
@@ -92,8 +89,7 @@ public abstract class MixinGameRenderer {
         boolean lightning = world.getLightningTicksLeft() > 0;
         float[] brightness = world.dimension.getLightLevelToBrightness();
 
-        int glTex = this.client.getTextureManager()
-                .getTexture(this.lightmapTextureId).getGlId();
+        int glTex = this.lightmapTexture.getGlId();
 
         SulfideState.INSTANCE.getLightmapCompute().dispatch(
                 glTex, brightness,

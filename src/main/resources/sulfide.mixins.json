@@ -14,8 +14,7 @@
     "MixinLivingEntityRenderer",
     "MixinModelBox",
     "MixinModelPart",
-    "MixinTextRenderer",
-    "MixinWorldRenderer"
+    "MixinTextRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

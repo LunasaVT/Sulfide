@@ -113,6 +113,6 @@ class EntityRecordRenderer : AbstractInstancedRenderer(MAX_INSTANCES) {
     }
 
     companion object {
-        const val MAX_INSTANCES = 32_384
+        const val MAX_INSTANCES = 256_000
     }
 }

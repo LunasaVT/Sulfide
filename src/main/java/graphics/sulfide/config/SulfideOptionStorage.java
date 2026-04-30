@@ -21,8 +21,6 @@ public class SulfideOptionStorage {
 
     private boolean enableInstancedEntities = true;
     private boolean enableTextWidthCache = true;
-    private boolean enableSkyRendering = true;
-    private boolean enableCloudRendering = true;
     private boolean enableComputeLightmap = false;
 
     private int textWidthCacheSize = 4096;
@@ -55,22 +53,6 @@ public class SulfideOptionStorage {
 
     public void setEnableTextWidthCache(boolean v) {
         enableTextWidthCache = v;
-    }
-
-    public boolean isEnableSkyRendering() {
-        return enableSkyRendering;
-    }
-
-    public void setEnableSkyRendering(boolean v) {
-        enableSkyRendering = v;
-    }
-
-    public boolean isEnableCloudRendering() {
-        return enableCloudRendering;
-    }
-
-    public void setEnableCloudRendering(boolean v) {
-        enableCloudRendering = v;
     }
 
     public boolean isEnableComputeLightmap() {
@@ -162,9 +144,7 @@ public class SulfideOptionStorage {
     private static class ConfigData {
         boolean enableInstancedEntities = true;
         boolean enableTextWidthCache = true;
-        boolean enableSkyRendering = true;
-        boolean enableCloudRendering = true;
-        boolean enableComputeLightmap = false;
+        boolean enableComputeLightmap = true;
         int textWidthCacheSize = 4096;
         int maxEntityInstances = 32384;
         int atlasLayerSize = 1024;
@@ -178,8 +158,6 @@ public class SulfideOptionStorage {
         ConfigData(SulfideOptionStorage s) {
             enableInstancedEntities = s.enableInstancedEntities;
             enableTextWidthCache = s.enableTextWidthCache;
-            enableSkyRendering = s.enableSkyRendering;
-            enableCloudRendering = s.enableCloudRendering;
             enableComputeLightmap = s.enableComputeLightmap;
             textWidthCacheSize = s.textWidthCacheSize;
             maxEntityInstances = s.maxEntityInstances;
@@ -192,8 +170,6 @@ public class SulfideOptionStorage {
         void applyTo(SulfideOptionStorage s) {
             s.setEnableInstancedEntities(enableInstancedEntities);
             s.setEnableTextWidthCache(enableTextWidthCache);
-            s.setEnableSkyRendering(enableSkyRendering);
-            s.setEnableCloudRendering(enableCloudRendering);
             s.setEnableComputeLightmap(enableComputeLightmap);
             s.setTextWidthCacheSize(textWidthCacheSize);
             s.setMaxEntityInstances(maxEntityInstances);
