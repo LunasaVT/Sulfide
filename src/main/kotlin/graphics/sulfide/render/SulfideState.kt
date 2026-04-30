@@ -54,8 +54,6 @@ object SulfideState {
             EntityCube.destroy()
             lightmapCompute.close()
         }
-        if (CloudFlatVbo.isUploaded) CloudFlatVbo.destroy()
-        if (SkyVboCache.isUploaded) SkyVboCache.destroy()
     }
 
     fun beginFrame() {

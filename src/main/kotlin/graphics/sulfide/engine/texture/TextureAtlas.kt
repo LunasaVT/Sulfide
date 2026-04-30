@@ -88,7 +88,7 @@ class TextureAtlas(
         srcHandle: Int
     ): TextureRegion {
         require(width in 1..layerSize && height in 1..layerSize) {
-            "Texture ($width×$height) exceeds atlas layer size ($layerSize)"
+            "Texture ($width x $height) exceeds atlas layer size ($layerSize)"
         }
 
         val buf = MemoryUtil.memAlloc(width * height * 4)
@@ -122,7 +122,7 @@ class TextureAtlas(
     }
 
     private fun allocateRegion(width: Int, height: Int): TextureRegion {
-        for (layerIdx in 0 until shelves.size) {
+        for (layerIdx in shelves.indices) {
             val region = tryAllocateInLayer(layerIdx, width, height)
             if (region != null) return region
         }

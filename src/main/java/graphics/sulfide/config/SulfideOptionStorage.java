@@ -14,10 +14,10 @@ import java.nio.file.Paths;
 public class SulfideOptionStorage {
     private static final Logger LOGGER = LogManager.getLogger("sulfide/config");
 
-    private static final SulfideOptionStorage INSTANCE = new SulfideOptionStorage();
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH = Paths.get("config", "sulfide.json");
+
+    private static final SulfideOptionStorage INSTANCE = new SulfideOptionStorage();
 
     private boolean enableInstancedEntities = true;
     private boolean enableTextWidthCache = true;

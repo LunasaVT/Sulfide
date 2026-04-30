@@ -7,7 +7,9 @@
     "MixinSodiumWorldRenderer"
   ],
   "client": [
+    "CameraAccess",
     "MixinBufferBuilder",
+    "MixinDiffuseLighting",
     "MixinGameRenderer",
     "MixinGlStateManager",
     "MixinHeldItemFeatureRenderer",

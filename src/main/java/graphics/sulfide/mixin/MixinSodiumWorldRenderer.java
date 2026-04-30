@@ -24,10 +24,12 @@ public class MixinSodiumWorldRenderer {
 
     @Inject(method = "renderBlockEntities(Ljava/util/Map;F)V", at = @At("HEAD"))
     void sulfide$renderBlockEntities(Map<Integer, BlockBreakingInfo> blockBreakingProgressions, float tickDelta, CallbackInfo ci) {
-        sulfide$projBuf.clear();
-        GL11.glGetFloatv(GL11.GL_PROJECTION_MATRIX, sulfide$projBuf);
-        sulfide$projBuf.rewind();
-        SulfideState.INSTANCE.endFrame(new Matrix4f(sulfide$projBuf));
+        /*
+            sulfide$projBuf.clear();
+            GL11.glGetFloatv(GL11.GL_PROJECTION_MATRIX, sulfide$projBuf);
+            sulfide$projBuf.rewind();
+         */
+        SulfideState.INSTANCE.endFrame(new Matrix4f(CameraAccess.getProjectionMatrix()));
 
         GL45C.glBindVertexArray(0);
         GL30C.glUseProgram(0);

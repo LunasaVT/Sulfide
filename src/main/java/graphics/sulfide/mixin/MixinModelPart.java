@@ -152,10 +152,7 @@ public class MixinModelPart {
                 MatrixTracker.INSTANCE.getBoundTexture());
         if (region == null) return;
 
-        sulfide$mvBuf.clear();
-        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, sulfide$mvBuf);
-        sulfide$mvBuf.rewind();
-        Matrix4f modelview = new Matrix4f(sulfide$mvBuf);
+        Matrix4f modelview = new Matrix4f(MatrixTracker.getModelViewCopy());
 
         boolean isGlint = GL11.glIsEnabled(GL11.GL_BLEND)
                 && GL11.glGetInteger(GL11.GL_BLEND_SRC) == GL11.GL_SRC_COLOR;

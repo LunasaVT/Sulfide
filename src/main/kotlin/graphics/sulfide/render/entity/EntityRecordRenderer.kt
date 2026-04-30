@@ -1,5 +1,6 @@
 package graphics.sulfide.render.entity
 
+import graphics.sulfide.engine.LightState
 import graphics.sulfide.engine.command.CommandEncoder
 import graphics.sulfide.engine.pipeline.RenderPipelines
 import graphics.sulfide.engine.texture.TextureAtlas
@@ -20,7 +21,6 @@ class EntityRecordRenderer : AbstractInstancedRenderer(MAX_INSTANCES) {
     private var locOff_glint: Int = -1
 
     private val vpArray = FloatArray(16)
-    private val lightBuf = BufferUtils.createFloatBuffer(4)
 
     fun render(
         viewProjection: Matrix4f,
@@ -51,16 +51,13 @@ class EntityRecordRenderer : AbstractInstancedRenderer(MAX_INSTANCES) {
 
         viewProjection.get(vpArray)
 
-        lightBuf.clear()
-        GL11.glGetLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, lightBuf)
-        val l0x = lightBuf.get(0);
-        val l0y = lightBuf.get(1);
-        val l0z = lightBuf.get(2)
-        lightBuf.clear()
-        GL11.glGetLightfv(GL11.GL_LIGHT1, GL11.GL_POSITION, lightBuf)
-        val l1x = lightBuf.get(0);
-        val l1y = lightBuf.get(1);
-        val l1z = lightBuf.get(2)
+        val l0x = LightState.light0.get(0)
+        val l0y = LightState.light0.get(1)
+        val l0z = LightState.light0.get(2)
+
+        val l1x = LightState.light1.get(0)
+        val l1y = LightState.light1.get(1)
+        val l1z = LightState.light1.get(2)
 
         if (normalCount > 0) {
             CommandEncoder().use { enc ->
