@@ -2,6 +2,7 @@ package graphics.sulfide.engine.command
 
 import graphics.sulfide.engine.buffer.GpuBuffer
 import graphics.sulfide.engine.pipeline.Pipeline
+import graphics.sulfide.engine.pipeline.ShaderProgram
 import org.lwjgl.opengl.GL11C
 import org.lwjgl.opengl.GL20C
 import org.lwjgl.opengl.GL42C
@@ -14,7 +15,6 @@ class CommandEncoder : AutoCloseable {
         activePipeline = pipeline
         pipeline.bind()
     }
-
     fun setVertexBuffer(buffer: GpuBuffer, offset: Long = 0, stride: Int) {
         val pipeline = requirePipeline()
         GL45C.glVertexArrayVertexBuffer(pipeline.vao, 0, buffer.handle, offset, stride)

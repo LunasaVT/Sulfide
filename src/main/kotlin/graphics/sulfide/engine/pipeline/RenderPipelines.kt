@@ -16,8 +16,6 @@ object RenderPipelines {
     fun init() {
         check(!isInitialised) { "RenderPipelines.init() called twice" }
 
-        val vertexFormat = EntityCube.VERTEX_FORMAT
-
         ENTITY_INSTANCED = Pipeline(
             shader = ShaderProgram.fromResources(
                 "shaders/entity_instanced.vert",
@@ -32,7 +30,7 @@ object RenderPipelines {
                 blendSrc = GL11C.GL_SRC_ALPHA,
                 blendDst = GL11C.GL_ONE_MINUS_SRC_ALPHA
             ),
-            vertexFormat = vertexFormat
+            vertexFormat = EntityCube.VERTEX_FORMAT
         )
 
         ENTITY_INSTANCED_GLINT = Pipeline(
@@ -49,7 +47,7 @@ object RenderPipelines {
                 blendSrc = GL11C.GL_SRC_COLOR,
                 blendDst = GL11C.GL_ONE
             ),
-            vertexFormat = vertexFormat
+            vertexFormat = EntityCube.VERTEX_FORMAT
         )
 
         isInitialised = true

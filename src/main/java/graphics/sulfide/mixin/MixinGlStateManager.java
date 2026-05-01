@@ -77,6 +77,36 @@ public class MixinGlStateManager {
         MatrixTracker.setColor(r, g, b, MatrixTracker.INSTANCE.getColorA());
     }
 
+    @Inject(method = "enableBlend", at = @At("HEAD"))
+    private static void sulfide$enableBlend(CallbackInfo ci) {
+        MatrixTracker.setBlend(true);
+    }
+
+    @Inject(method = "disableBlend", at = @At("HEAD"))
+    private static void sulfide$disableBlend(CallbackInfo ci) {
+        MatrixTracker.setBlend(false);
+    }
+
+    @Inject(method = "blendFunc", at = @At("HEAD"))
+    private static void sulfide$blendFunc(int src, int dst, CallbackInfo ci) {
+        MatrixTracker.setBlendFunc(src, dst);
+    }
+
+    @Inject(method = "enableTexture", at = @At("HEAD"))
+    private static void sulfide$enableTexture(CallbackInfo ci) {
+        MatrixTracker.setTextureEnabled(true);
+    }
+
+    @Inject(method = "disableTexture", at = @At("HEAD"))
+    private static void sulfide$disableTexture(CallbackInfo ci) {
+        MatrixTracker.setTextureEnabled(false);
+    }
+
+    @Inject(method = "alphaFunc", at = @At("HEAD"))
+    private static void sulfide$alphaFunc(int func, float ref, CallbackInfo ci) {
+        MatrixTracker.setAlphaFunc(func, ref);
+    }
+
 
 }
 

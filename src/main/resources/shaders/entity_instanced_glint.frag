@@ -27,12 +27,11 @@ void main() {
     // sample the glint texture from our fat atlas
     vec4 glintSample = texture(uMegaAtlas, vAtlasCoord);
 
-    // alpha test to discard fragments that are too transparent
     if (glintSample.a < 0.004) discard;
 
     // emit the fragment
     fragColor = vec4(
-        glintSample.rgb * vColor.rgb * 0.5,
-        glintSample.a   * 0.67
+        glintSample.rgb * vColor.rgb * 1.15,
+        glintSample.a   * 0.9
     );
 }

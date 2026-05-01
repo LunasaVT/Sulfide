@@ -18,6 +18,25 @@ object MatrixTracker {
     @Volatile
     var boundTexture: Int = 0
 
+    @JvmStatic
+    @Volatile
+    var textureEnabled: Boolean = true
+
+    @Volatile
+    var blendEnabled: Boolean = false
+
+    @Volatile
+    var blendSrc: Int = 1
+
+    @Volatile
+    var blendDst: Int = 0
+
+    @Volatile
+    var _alphaFunc: Int = 519
+
+    @Volatile
+    var alphaRef: Float = 0f
+
     var colorR: Float = 1f;
     var colorG: Float = 1f
     var colorB: Float = 1f;
@@ -26,6 +45,23 @@ object MatrixTracker {
     @JvmStatic
     fun setColor(r: Float, g: Float, b: Float, a: Float) {
         colorR = r; colorG = g; colorB = b; colorA = a
+    }
+
+    @JvmStatic
+    fun setBlend(enabled: Boolean) {
+        blendEnabled = enabled
+    }
+
+    @JvmStatic
+    fun setBlendFunc(src: Int, dst: Int) {
+        blendSrc = src
+        blendDst = dst
+    }
+
+    @JvmStatic
+    fun setAlphaFunc(func: Int, ref: Float) {
+        _alphaFunc = func
+        alphaRef = ref
     }
 
     var overlayR: Float = 0f;
@@ -95,6 +131,9 @@ object MatrixTracker {
 
     @JvmStatic
     fun getTextureCopy(): Matrix4f = Matrix4f(texStack.last())
+
+    @JvmStatic
+    fun getProjectionCopy(): Matrix4f = Matrix4f(projStack.last())
 
     private fun stack(): ArrayDeque<Matrix4f> = when (mode) {
         GL_PROJECTION -> projStack

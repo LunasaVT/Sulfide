@@ -52,7 +52,7 @@ public abstract class MixinGameRenderer {
             at = @At(value = "INVOKE", target = RENDER_ENTITIES)
     )
     private void sulfide$beforeEntities(int anaglyphFilter, float tickDelta, long limitTime,
-                                      CallbackInfo ci) {
+                                        CallbackInfo ci) {
         if (SulfideOptionStorage.getInstance().isEnableInstancedEntities()) {
             SulfideState.INSTANCE.beginFrame();
         }

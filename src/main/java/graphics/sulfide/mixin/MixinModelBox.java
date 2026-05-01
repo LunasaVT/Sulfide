@@ -1,6 +1,7 @@
 package graphics.sulfide.mixin;
 
 import graphics.sulfide.engine.MatrixTracker;
+import graphics.sulfide.render.entity.EntityModelCollector;
 import net.minecraft.client.render.ModelBox;
 import net.minecraft.client.render.model.ModelPart;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,10 +22,33 @@ public class MixinModelBox {
             float inflate, boolean mirror,
             CallbackInfo ci
     ) {
+        float textureWidth = part.textureWidth;
+        float textureHeight = part.textureHeight;
+        int i = texU;
+        int j = texV;
+        int k = szX;
+        int l = szY;
+        int m = szZ;
+
         MatrixTracker.INSTANCE.getBoxUVData().put(this, new int[]{
-                texU, texV, szX, szY, szZ,
-                Float.floatToRawIntBits(part.textureWidth),
-                Float.floatToRawIntBits(part.textureHeight),
+                EntityModelCollector.packUV((i + 2f * m + k) / textureWidth, (j + m) / textureHeight),
+                EntityModelCollector.packUV((i + 2f * m + 2f * k) / textureWidth, (j + m + l) / textureHeight),
+
+                EntityModelCollector.packUV((i + m) / textureWidth, (j + m) / textureHeight),
+                EntityModelCollector.packUV((i + m + k) / textureWidth, (j + m + l) / textureHeight),
+
+                EntityModelCollector.packUV(i / textureWidth, (j + m) / textureHeight),
+                EntityModelCollector.packUV((i + m) / textureWidth, (j + m + l) / textureHeight),
+
+                EntityModelCollector.packUV((i + m + k) / textureWidth, (j + m) / textureHeight),
+                EntityModelCollector.packUV((i + 2f * m + k) / textureWidth, (j + m + l) / textureHeight),
+
+                EntityModelCollector.packUV((i + m + k) / textureWidth, (j + m) / textureHeight),
+                EntityModelCollector.packUV((i + m + 2f * k) / textureWidth, j / textureHeight),
+
+                EntityModelCollector.packUV((i + m) / textureWidth, j / textureHeight),
+                EntityModelCollector.packUV((i + m + k) / textureWidth, (j + m) / textureHeight),
+
                 Float.floatToRawIntBits(inflate)
         });
     }

@@ -58,11 +58,7 @@ public class MixinModelPart {
     private static final float RAD_TO_DEG = 180.0F / (float) Math.PI;
 
     @Unique
-    private static final FloatBuffer sulfide$mvBuf = BufferUtils.createFloatBuffer(16);
-    @Unique
     private static final FloatBuffer sulfide$lightBuf = BufferUtils.createFloatBuffer(4);
-    @Unique
-    private static final FloatBuffer sulfide$texMatBuf = BufferUtils.createFloatBuffer(16);
 
 
     @Inject(method = "render(F)V", at = @At("HEAD"), cancellable = true)
@@ -152,19 +148,17 @@ public class MixinModelPart {
                 MatrixTracker.INSTANCE.getBoundTexture());
         if (region == null) return;
 
-        Matrix4f modelview = new Matrix4f(MatrixTracker.getModelViewCopy());
+        Matrix4f modelview = MatrixTracker.getModelViewCopy();
+        Matrix4f model = new Matrix4f();
 
-        boolean isGlint = GL11.glIsEnabled(GL11.GL_BLEND)
-                && GL11.glGetInteger(GL11.GL_BLEND_SRC) == GL11.GL_SRC_COLOR;
+        boolean isGlint = MatrixTracker.INSTANCE.getBlendEnabled()
+                && MatrixTracker.INSTANCE.getBlendSrc() == GL11.GL_SRC_COLOR;
 
         float uvM00 = 1f, uvM01 = 0f;
         float uvM10 = 0f, uvM11 = 1f;
         float uvM30 = 0f, uvM31 = 0f;
         if (isGlint) {
-            sulfide$texMatBuf.clear();
-            GL11.glGetFloatv(GL11.GL_TEXTURE_MATRIX, sulfide$texMatBuf);
-            sulfide$texMatBuf.rewind();
-            Matrix4f texMat = new Matrix4f(sulfide$texMatBuf);
+            Matrix4f texMat = MatrixTracker.getTextureCopy();
             uvM00 = texMat.m00();
             uvM01 = texMat.m10();
             uvM10 = texMat.m01();
@@ -203,7 +197,7 @@ public class MixinModelPart {
             int[] uvData = MatrixTracker.INSTANCE.getBoxUVData().get(box);
             if (uvData == null) continue;
 
-            float inflate = (uvData.length > 7) ? Float.intBitsToFloat(uvData[7]) : 0.0f;
+            float inflate = Float.intBitsToFloat(uvData[12]);
 
             float cx = (box.minX + box.maxX) * 0.5f * scale;
             float cy = (box.minY + box.maxY) * 0.5f * scale;
@@ -212,13 +206,13 @@ public class MixinModelPart {
             float sy = ((box.maxY - box.minY) + inflate * 2.0f) * scale;
             float sz = ((box.maxZ - box.minZ) + inflate * 2.0f) * scale;
 
-            Matrix4f model = new Matrix4f(modelview)
+            model.set(modelview)
                     .translate(cx, cy, cz)
                     .scale(sx, sy, sz);
 
             EntityModelCollector.record(
                     model,
-                    sulfide$buildUvRects(uvData),
+                    uvData,
                     region,
                     lightU,
                     lightV,
@@ -232,31 +226,4 @@ public class MixinModelPart {
         }
     }
 
-    @Unique
-    private static int[] sulfide$buildUvRects(int[] uv) {
-        int i = uv[0], j = uv[1];
-        int k = uv[2], l = uv[3], m = uv[4];
-        float tw = Float.intBitsToFloat(uv[5]);
-        float th = Float.intBitsToFloat(uv[6]);
-
-        return new int[]{
-                EntityModelCollector.packUV((i + 2 * m + k) / tw, (j + m) / th),
-                EntityModelCollector.packUV((i + 2 * m + 2 * k) / tw, (j + m + l) / th),
-
-                EntityModelCollector.packUV((i + m) / tw, (j + m) / th),
-                EntityModelCollector.packUV((i + m + k) / tw, (j + m + l) / th),
-
-                EntityModelCollector.packUV(i / tw, (j + m) / th),
-                EntityModelCollector.packUV((i + m) / tw, (j + m + l) / th),
-
-                EntityModelCollector.packUV((i + m + k) / tw, (j + m) / th),
-                EntityModelCollector.packUV((i + 2 * m + k) / tw, (j + m + l) / th),
-
-                EntityModelCollector.packUV((i + m + k) / tw, (j + m) / th),
-                EntityModelCollector.packUV((i + m + 2 * k) / tw, j / th),
-
-                EntityModelCollector.packUV((i + m) / tw, j / th),
-                EntityModelCollector.packUV((i + m + k) / tw, (j + m) / th),
-        };
-    }
 }
