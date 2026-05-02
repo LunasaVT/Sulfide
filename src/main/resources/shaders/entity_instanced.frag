@@ -46,8 +46,9 @@ void main() {
     vec3 shadedRGB = clamp(texColor.rgb * vColor.rgb * lightmap * lighting, 0.0, 1.0);
     float shadedA  = texColor.a * vColor.a;
 
-    vec3 finalRGB = vOverlayColor.a > 0.0
-        ? mix(shadedRGB, vOverlayColor.rgb, vOverlayColor.a)
+    float overlayStrength = vOverlayColor.a * shadedA;
+    vec3 finalRGB = overlayStrength > 0.0
+        ? mix(shadedRGB, vOverlayColor.rgb, overlayStrength)
         : shadedRGB;
 
     // emit the fragment
